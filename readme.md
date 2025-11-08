@@ -29,14 +29,15 @@ The project is divided into two main components: the `translator` and the `inter
 The `translator` executable converts a video file (e.g., MP4) into a custom `.obj` file containing the ASCII art representation of the video.
 
 ```bash
-./translator --input /path/to/your/video.mp4 --output /path/to/your/output.obj
+./translator <input_video> <output_obj> [--width <w>] [--charset <name>]
 ```
 
 **Arguments:**
 
-*   `--input`: The path to the input video file.
-*   `--output`: The path where the output `.obj` file will be saved.
-*   `--width`: (Optional) The desired width of the ASCII art output. Defaults to 120 characters.
+*   `<input_video>`: The path to the input video file.
+*   `<output_obj>`: The path where the output `.obj` file will be saved.
+*   `--width <w>`: (Optional) The desired width of the ASCII art output. Defaults to 120 characters.
+*   `--charset <name>`: (Optional) The character set to use. Can be `short`, `medium`, or `long`. Defaults to `medium`.
 
 ### 2. Play the ASCII Video
 
