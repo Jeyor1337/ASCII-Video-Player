@@ -6,7 +6,7 @@ This project allows you to convert video files into ASCII art and play them in y
 
 1.  **Clone the repository:**
     ```bash
-    git clone <https://github.com/Jeyor1337/ASCII-Video-Player.git>
+    git clone https://github.com/Jeyor1337/ASCII-Video-Player.git
     cd ASCII-Video-Player
     ```
 
