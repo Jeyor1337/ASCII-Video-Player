@@ -1,33 +1,41 @@
 CC=gcc
-CFLAGS=-Wall -g -std=c99
+CFLAGS=-g -std=gnu99
 CXX=g++
 CXXFLAGS=-Wall -g
 
+# Directories
+SRC_DIR=src
+BUILD_DIR=build
+
 # Interpreter settings
-INTERPRETER_SRC=interpreter.c
-INTERPRETER_TARGET=interpreter
-INTERPRETER_LDFLAGS=-ljson-c
+INTERPRETER_SRC=$(SRC_DIR)/interpreter.cpp
+INTERPRETER_TARGET=$(BUILD_DIR)/interpreter
+INTERPRETER_CFLAGS=$(shell pkg-config --cflags opencv4 | sed 's|-I|-isystem |g' | sed 's|//data/data/com.termux/files/usr||g')
+INTERPRETER_LDFLAGS=$(shell pkg-config --libs opencv4 | sed 's|//data/data/com.termux/files/usr||g') -ljson-c
 
 # Translator settings
-TRANSLATOR_SRC=translator.cpp
-TRANSLATOR_TARGET=translator
-TRANSLATOR_CFLAGS=$(shell pkg-config --cflags opencv4 | sed 's|//data/data/com.termux/files/usr||g')
+TRANSLATOR_SRC=$(SRC_DIR)/translator.cpp
+TRANSLATOR_TARGET=$(BUILD_DIR)/translator
+TRANSLATOR_CFLAGS=$(shell pkg-config --cflags opencv4 | sed 's|-I|-isystem |g' | sed 's|//data/data/com.termux/files/usr||g')
 TRANSLATOR_LDFLAGS=$(shell pkg-config --libs opencv4 | sed 's|//data/data/com.termux/files/usr||g')
 
 TARGETS=$(INTERPRETER_TARGET) $(TRANSLATOR_TARGET)
 
 .PHONY: all clean
 
-all: $(TARGETS)
+all: $(BUILD_DIR) $(TARGETS)
 
-$(INTERPRETER_TARGET): $(INTERPRETER_SRC)
-	$(CC) $(CFLAGS) -o $@ $^ $(INTERPRETER_LDFLAGS)
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-$(TRANSLATOR_TARGET): $(TRANSLATOR_SRC)
-	$(CXX) $(CXXFLAGS) $(TRANSLATOR_CFLAGS) -o $@ $^ $(TRANSLATOR_LDFLAGS)
+$(INTERPRETER_TARGET): $(INTERPRETER_SRC) $(SRC_DIR)/ascii_decode.h
+	$(CXX) $(CXXFLAGS) $(INTERPRETER_CFLAGS) -o $@ $(INTERPRETER_SRC) $(INTERPRETER_LDFLAGS)
+
+$(TRANSLATOR_TARGET): $(TRANSLATOR_SRC) $(SRC_DIR)/ascii_decode.h
+	$(CXX) $(CXXFLAGS) $(TRANSLATOR_CFLAGS) -o $@ $(TRANSLATOR_SRC) $(TRANSLATOR_LDFLAGS)
 
 clean:
-	rm -f $(TARGETS)
+	rm -rf $(BUILD_DIR)
 
 # Note: This Makefile requires the json-c and OpenCV 4 libraries to be installed.
 # On Debian/Ubuntu, you can install them with:
